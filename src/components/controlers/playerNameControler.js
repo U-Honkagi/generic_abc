@@ -1,4 +1,4 @@
-var PlayerNameControlerComponent = {
+const PlayerNameControlerComponent = {
     template:
     `
     <div style="
@@ -10,8 +10,8 @@ var PlayerNameControlerComponent = {
             "
             v-bind:value="playerName" @blur="editText($event.target.value)">
         </label>
-        <button @click="correct"> ○ </button>
-        <button @click="wrong"  > × </button>
+        <span>{{ correct }}</span><button @click="setCorrect"> ○ </button>
+        <span>{{ wrong }}</span><button @click="setWrong"  > × </button>
     </div>
     `,
     props: {
@@ -26,27 +26,36 @@ var PlayerNameControlerComponent = {
     //         _status: 'active',
     //     }
     // },
-    methods: {
+    computed: {
         correct() {
-            store.commit('correct', { index: this.index });
+            return this.$store.state.players[this.index].correct;
         },
         wrong() {
-            store.commit('wrong', { index: this.index });
+            return this.$store.state.players[this.index].wrong;
+        },
+    },
+
+    methods: {
+        setCorrect() {
+            this.$store.commit('correct', { index: this.index });
+        },
+        setWrong() {
+            this.$store.commit('wrong', { index: this.index });
         },
         editText(editedName) {
-            store.commit('editText', { index: this.index, name: editedName });
+            this.$store.commit('editText', { index: this.index, name: editedName });
         },
     },
 
     created() {
-        // const player = store.getters.getPlayerDataById(Number(route.params.id));
-        // if (player === undefined) {
-        //     console.log('player undefined!');
-        //     return;
-        // }
-        // console.log(player.name);
-        // console.log(player.correct);
-        // console.log(player.wrong);
-        // console.log(player.status);
+        const player = this.$store.getters.getPlayerDataById(Number(this.index));
+        if (player === undefined) {
+            console.log('player undefined!');
+            return;
+        }
+        // this.playerName = player.name;
+        // this.correct    = player.correct;
+        // this.wrong      = player.wrong;
+        // this.status     = player.status;
     },
 }
