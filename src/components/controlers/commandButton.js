@@ -1,10 +1,10 @@
-var GameStarterComponent = {
+const CommandButtonComponent = {
     template:
     `
     <div style="
         height: 50px;
     ">
-        <button @click="startGame"> Game Start! </button>
+        <button @click="undo"> Undo </button>
     </div>
     `,
     // data() {
@@ -19,11 +19,9 @@ var GameStarterComponent = {
     },
 
     methods: {
-        startGame() {
+        undo() {
+            this.$store.dispatch('undo');
         },
-        // setWrong() {
-        //     this.$store.commit('wrong', { index: this.index });
-        // },
     },
 
     created() {
