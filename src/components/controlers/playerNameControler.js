@@ -28,23 +28,25 @@ var PlayerNameControlerComponent = {
     // },
     methods: {
         correct() {
-            store.commit('correct', this.index);
+            store.commit('correct', { index: this.index });
         },
         wrong() {
-            store.commit('wrong', this.index);
+            store.commit('wrong', { index: this.index });
         },
         editText(editedName) {
             store.commit('editText', { index: this.index, name: editedName });
         },
     },
 
-    // created() {
-    //     const todo = this.$store.getters.getTodoById(Number(this.$route.params.id));
-    //     if (todo === undefined) {
-
-    //       return;
-    //     }
-    //     this.title = todo.title;
-    //     this.detail = todo.detail;
-    // },
+    created() {
+        // const player = store.getters.getPlayerDataById(Number(route.params.id));
+        // if (player === undefined) {
+        //     console.log('player undefined!');
+        //     return;
+        // }
+        // console.log(player.name);
+        // console.log(player.correct);
+        // console.log(player.wrong);
+        // console.log(player.status);
+    },
 }

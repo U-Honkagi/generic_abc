@@ -18,16 +18,18 @@ const store = new Vuex.Store({
             { name: 'プレイヤー12', correct: 0, wrong: 0, state: 'active' },
         ],
     },
-    // getters: {
-    //     currentCorrect:
-    // },
+    getters: {
+        getPlayerDataById: state => id => {
+            return state.players.find(players => players.id === id);
+        }
+    },
     mutations: {
-        correct(state, index) {
+        correct(state, { index }) {
             state.players[index].correct++;
             console.log(state.players[index].name);
             console.log(state.players[index].correct);
         },
-        wrong(state, index) {
+        wrong(state, { index }) {
             state.players[index].wrong++;
             console.log(state.players[index].name);
             console.log(state.players[index].wrong);
