@@ -5,6 +5,7 @@ const CommandButtonComponent = {
         height: 50px;
     ">
         <button @click="undo"> Undo </button>
+        <button @click="redo"> Redo </button>
     </div>
     `,
     // data() {
@@ -21,6 +22,9 @@ const CommandButtonComponent = {
     methods: {
         undo() {
             this.$store.dispatch('undo');
+        },
+        redo() {
+            this.$store.dispatch('redo');
         },
     },
 

@@ -16,6 +16,7 @@ const store = new Vuex.Store({
             { id:11, name: 'プレイヤー12', correct: 0, wrong: 0, status: 'active' },
         ],
         undoStacks: [],
+        redoStacks: [],
     },
     getters: {
         getPlayerDataById: state => id => {
@@ -52,6 +53,12 @@ const store = new Vuex.Store({
             }
             state.undoStacks.length = 0;
         },
+        pushRedoStack(state, { index, act }) {
+            state.redoStacks.push({ index: index, act: act });
+        },
+        clearRedoStack(state) {
+            state.redoStacks.length = 0;
+        },
     },
     actions: {
         undo({ commit, state }) {
@@ -62,6 +69,7 @@ const store = new Vuex.Store({
             const localUndoStack = state.undoStacks.slice();
             commit('resetPlayerPoints');
             const lastAct = localUndoStack.pop();
+            commit('pushRedoStack', { index: lastAct.index, act: lastAct.act });
             for (let i = 0; i < localUndoStack.length; i++) {
                 switch(localUndoStack[i].act) {
                 case 'o':
@@ -76,6 +84,33 @@ const store = new Vuex.Store({
                     break;
                 }
             }
+        },
+        redo({ commit, state }) {
+            if (state.redoStacks.length <= 0) {
+                console.log('invalid redo');
+                return;
+            }
+            const localRedoStack = state.redoStacks.pop();  // いいのかこれ？
+            switch(localRedoStack.act) {
+            case 'o':
+                console.log('o');
+                commit('correct', { index: localRedoStack.index });
+                break;
+            case 'x':
+                console.log('x');
+                commit('wrong', { index: localRedoStack.index });
+                break;
+            default:
+                break;
+            }
+        },
+        correct({ commit }, { index: index }) {
+            commit('correct', { index: index });
+            commit('clearRedoStack');
+        },
+        wrong({ commit }, { index: index }) {
+            commit('wrong', { index: index });
+            commit('clearRedoStack');
         },
     },
 })

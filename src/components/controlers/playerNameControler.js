@@ -37,10 +37,10 @@ const PlayerNameControlerComponent = {
 
     methods: {
         setCorrect() {
-            this.$store.commit('correct', { index: this.index });
+            this.$store.dispatch('correct', { index: this.index });
         },
         setWrong() {
-            this.$store.commit('wrong', { index: this.index });
+            this.$store.dispatch('wrong', { index: this.index });
         },
         editText(editedName) {
             this.$store.commit('editText', { index: this.index, name: editedName });
