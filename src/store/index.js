@@ -1,7 +1,7 @@
 const store = new Vuex.Store({
     state: {
         players: [
-            //       プレイヤー名            o         x           状態
+            //              プレイヤー名            o         x           状態
             { id: 0, name: 'プレイヤー01', correct: 3, wrong: 0, status: 'active' },
             { id: 1, name: 'プレイヤー02', correct: 2, wrong: 0, status: 'active' },
             { id: 2, name: 'プレイヤー03', correct: 2, wrong: 0, status: 'active' },
@@ -17,6 +17,7 @@ const store = new Vuex.Store({
         ],
         undoStacks: [],
         redoStacks: [],
+        lastCorrectIndex: -1,
     },
     getters: {
         getPlayerDataById: state => id => {
@@ -32,13 +33,35 @@ const store = new Vuex.Store({
     },
     mutations: {
         correct(state, { index }) {
+            if (state.players[index].correct >= 5) {
+                return;
+            }
+
             state.players[index].correct++;
-            const command = { index: index, act: 'o' };
-            state.undoStacks.push(command);
+            if (index === state.lastCorrectIndex) { // 連答
+                state.players[index].correct++;
+            }
+            state.lastCorrectIndex = index;
+            state.undoStacks.push({ index: index, act: 'o' });
+            if (state.players[index].correct >= 5) {
+                state.players[index].correct = 5;
+                state.players[index].status = 'win';
+            }
         },
         wrong(state, { index }) {
+            if (state.players[index].wrong >= 2) {
+                return;
+            }
+
             state.players[index].wrong++;
+            if (index === state.lastCorrectIndex) {
+                state.lastCorrectIndex = -1;
+            }
             state.undoStacks.push({ index: index, act: 'x' });
+            if (state.players[index].wrong >= 2) {
+                state.players[index].wrong = 2;
+                state.players[index].status = 'lose';
+            }
         },
         editText(state, { index, name }) {
             state.players[index].name = name;
@@ -52,6 +75,7 @@ const store = new Vuex.Store({
                 state.players[i].status = 'active';
             }
             state.undoStacks.length = 0;
+            state.lastCorrectIndex = -1;
         },
         pushRedoStack(state, { index, act }) {
             state.redoStacks.push({ index: index, act: act });
@@ -104,11 +128,11 @@ const store = new Vuex.Store({
                 break;
             }
         },
-        correct({ commit }, { index: index }) {
+        correct({ commit }, { index }) {
             commit('correct', { index: index });
             commit('clearRedoStack');
         },
-        wrong({ commit }, { index: index }) {
+        wrong({ commit }, { index }) {
             commit('wrong', { index: index });
             commit('clearRedoStack');
         },

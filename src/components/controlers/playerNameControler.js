@@ -10,8 +10,9 @@ const PlayerNameControlerComponent = {
             "
             v-bind:value="playerName" @blur="editText($event.target.value)">
         </label>
-        <span>{{ correct }}</span><button @click="setCorrect"> ○ </button>
-        <span>{{ wrong }}</span><button @click="setWrong"  > × </button>
+        <span>{{ correct }}</span><button @click="setCorrect" v-bind:disabled="!isActive"> ○ </button>
+        <span>{{ wrong }}</span><button @click="setWrong" v-bind:disabled="!isActive"> × </button>
+        <span>{{ status }}</span>
     </div>
     `,
     props: {
@@ -32,6 +33,12 @@ const PlayerNameControlerComponent = {
         },
         wrong() {
             return this.$store.state.players[this.index].wrong;
+        },
+        status() {
+            return this.$store.state.players[this.index].status;
+        },
+        isActive() {
+            return this.status === 'active';
         },
     },
 
